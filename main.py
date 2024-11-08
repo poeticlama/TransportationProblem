@@ -34,7 +34,7 @@ def north_west_corner(S: list[int], C: list[list[int]], D: list[int]) -> (list[l
 def vogel(S: list[int], C: list[list[int]], D: list[int]) -> (list[list[int]], int):
     D_copy = D.copy()
     S_copy = S.copy()
-    C_copy = C.copy()
+    C_copy = [C[i].copy() for i in range(len(C))]
     z = 0
     solution = [[0 for _ in range(len(C[0]))] for _ in range(len(C))]
     columns = list()
@@ -96,8 +96,55 @@ def vogel(S: list[int], C: list[list[int]], D: list[int]) -> (list[list[int]], i
     return solution, z
 
 
-def russell(S: list[int], C: list[list[int]], D: list[int]):
-    return
+def russell(S: list[int], C: list[list[int]], D: list[int]) -> (list[list[int]], int):
+    S_copy = S.copy()
+    D_copy = D.copy()
+    z = 0
+    solution = [[0 for _ in range(len(C[0]))] for _ in range(len(C))]
+    columns = list()
+    for j in range(len(C[0])):
+        columns.append([C[i][j] for i in range(len(C))])
+    U = [max(C[i]) for i in range(len(C))]
+    V = [max(columns[i]) for i in range(len(columns))]
+    rows_checked = list()
+    columns_checked = list()
+
+    while sum(S_copy) > 0:
+        delta = [[0 for _ in range(len(C[0]))] for _ in range(len(C))]
+        minimal = 10 ** 5
+        for i in range(len(S)):
+            if i in rows_checked:
+                for j in range(len(D)):
+                    delta[i][j] = 10 ** 5
+                continue
+            for j in range(len(D)):
+                if j in columns_checked:
+                    delta[i][j] = 10 ** 5
+                    continue
+                delta[i][j] -= (U[i] + V[j])
+                if delta[i][j] < minimal:
+                    i_min, j_min = (i, j)
+                    minimal = delta[i][j]
+        if S_copy[i_min] == D_copy[j_min]:
+            z += S_copy[i_min] * C[i_min][j_min]
+            rows_checked.append(i_min)
+            columns_checked.append(j_min)
+            solution[i_min][j_min] = D_copy[j_min]
+            S_copy[i_min] = 0
+            D_copy[j_min] = 0
+        elif S_copy[i_min] > D_copy[j_min]:
+            z += D_copy[j_min] * C[i_min][j_min]
+            columns_checked.append(j_min)
+            solution[i_min][j_min] = D_copy[j_min]
+            S_copy[i_min] -= D_copy[j_min]
+            D_copy[j_min] = 0
+        elif D_copy[j_min] > S_copy[i_min]:
+            z += S_copy[i_min] * C[i_min][j_min]
+            rows_checked.append(i_min)
+            solution[i_min][j_min] = S_copy[i_min]
+            D_copy[j_min] -= S_copy[i_min]
+            S_copy[i_min] = 0
+    return solution, z
 
 
 def main():
@@ -110,10 +157,20 @@ def main():
         print(vector)
     print('Answer:', z)
     print()
+
     solution, z = vogel(S, C, D)
     print("Initial basic feasible solution by using Vogel's approximation method:")
     for vector in solution:
         print(vector)
     print('Answer:', z)
+    print()
+
+    solution, z = russell(S, C, D)
+    print("Initial basic feasible solution by using Russell's approximation method:")
+    for vector in solution:
+        print(vector)
+    print('Answer:', z)
+    print()
+
 
 main()
