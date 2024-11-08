@@ -163,6 +163,7 @@ def main():
     S, C, D = input_data()
     if sum(S) != sum(D):
         print('The problem is not balanced!')
+        return
     solution, z = north_west_corner(S, C, D)
     print('Initial basic feasible solution by using North-West corner method:')
     for vector in solution:
