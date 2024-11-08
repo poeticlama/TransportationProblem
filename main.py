@@ -121,7 +121,7 @@ def russell(S: list[int], C: list[list[int]], D: list[int]) -> (list[list[int]],
                 if j in columns_checked:
                     delta[i][j] = 10 ** 5
                     continue
-                delta[i][j] -= (U[i] + V[j])
+                delta[i][j] = C[i][j] - (U[i] + V[j])
                 if delta[i][j] < minimal:
                     i_min, j_min = (i, j)
                     minimal = delta[i][j]
