@@ -43,6 +43,18 @@ def vogel(S: list[int], C: list[list[int]], D: list[int]) -> (list[list[int]], i
     row_difference = [0 for _ in range(len(S))]
     column_difference = [0 for _ in range(len(D))]
     while sum(S_copy) > 0:
+        c = 0
+        for i in range(len(S_copy)):
+            if S_copy[i] != 0:
+                c += 1
+                ind = i
+        if c == 1:
+            for i in range(len(D_copy)):
+                if D_copy[i] != 0:
+                    z += D_copy[i] * C[ind][i]
+                    solution[ind][i] = D_copy[i]
+            break
+
         for i in range(len(D)):
             column_sorted = sorted(columns[i])
             if column_sorted[1] != 10**5:
